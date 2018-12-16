@@ -15,8 +15,8 @@
             <p>{{ getDate() }}</p>
 
             <h2>登場アイドル</h2>
-            <ul class="idols">
-                <li v-for="name in getIdols()"><a v-bind:href="'?idol=' + name">{{ name }}</a></li>
+            <ul class="charcters">
+                <li v-for="name in getCharacters()"><a v-bind:href="'?character=' + name">{{ name }}</a></li>
             </ul>
 
             <h2>備考</h2>
@@ -48,8 +48,8 @@
             getTitle(): String {
                 return this.data.title;
             },
-            getIdols(): String[] {
-                return this.data.idols;
+            getCharacters(): String[] {
+                return this.data.characters;
             },
             getThumbnailHash(): String {
                 return this.data.thumbnail_hash;
@@ -110,7 +110,7 @@
         background-color: #ccccff;
         border-radius: 0.5em;
     }
-    .result > .detail > ul.idols {
+    .result > .detail > ul.charcters {
         display: -webkit-box;
         display: flex;
         flex-wrap: wrap;
@@ -119,7 +119,7 @@
         background-color: #ccccff;
         border-radius: 0.5em;
     }
-    .result > .detail > ul.idols > li {
+    .result > .detail > ul.charcters > li {
         list-style-type: none;
         display: inline;
         padding-right: 0.5em;

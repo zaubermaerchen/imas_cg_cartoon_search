@@ -15,10 +15,10 @@
                 </td>
             </tr>
             <tr>
-                <th>登場アイドル</th>
+                <th>登場キャラクター</th>
                 <td>
-                    <input type="hidden" name="idol" v-for="idol in selected_idols" v-bind:value="idol" />
-                    <v-select name="idol" v-model="selected_idols" v-bind:options="idol_names" multiple="multiple"></v-select>
+                    <input type="hidden" name="character" v-for="name in selected_characters" v-bind:value="name" />
+                    <v-select name="name" v-model="selected_characters" v-bind:options="character_names" multiple="multiple"></v-select>
                 </td>
             </tr>
         </table>
@@ -38,15 +38,15 @@
         },
         data: function () {
             return {
-                selected_idols: [],
-                idol_names: [],
+                selected_characters: [],
+                character_names: [],
             };
         },
         props: [
             "title",
             "start_at",
             "end_at",
-            "idols",
+            "characters",
         ],
         mounted: function (): void {
             fetch("https://zaubermaerchen.info/imas_cg/api/idol_name/list/", {
@@ -59,13 +59,13 @@
             }).then((response) => {
                 return response.json();
             }).then((json) => {
-                this.idol_names = json.names;
+                this.character_names = json.names;
             })
         },
         watch: {
-            idols: {
+            characters: {
                 handler(val) {
-                    this.selected_idols = val;
+                    this.selected_characters = val;
                 }
             }
         }

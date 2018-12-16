@@ -1,6 +1,6 @@
 <template>
     <section>
-        <searchform v-bind:title="title" v-bind:start_at="start_at" v-bind:end_at="end_at" v-bind:idols="idols"></searchform>
+        <searchform v-bind:title="title" v-bind:start_at="start_at" v-bind:end_at="end_at" v-bind:characters="characters"></searchform>
         <result v-for="result in results" v-bind:data="result"></result>
         <pager v-bind:count="count" v-bind:limit="limit" @change="changePage"></pager>
     </section>
@@ -31,7 +31,7 @@
                 title: "",
                 start_at: "2011-11-28",
                 end_at: getCurrentDate(),
-                idols: [],
+                characters: [],
                 results: [],
                 count: 0,
                 limit: 10
@@ -53,32 +53,28 @@
                 if(parameters.has("end_at")) {
                     this.end_at = parameters.get("end_at");
                 }
-                if(parameters.has("idol")) {
-                    this.idols = parameters.getAll("idol");
-                }
-                if(parameters.has("idols")) {
-                    this.idols = parameters.getAll("idols");
+                if(parameters.has("character")) {
+                    this.characters = parameters.getAll("character");
                 }
             },
             getResults(offset: number = 0) {
-                let data: FormData = new FormData();
-
+                const url = new URL("https://zaubermaerchen.info/imas_cg/api/cartoon/search/");
                 if(this.title.length > 0) {
-                    data.append("title", this.title);
+                    url.searchParams.append("title", this.title);
                 }
-                for(let i = 0; i < this.idols.length; i++) {
-                    data.append("idol", this.idols[i]);
+                for(let i = 0; i < this.characters.length; i++) {
+                    url.searchParams.append("character", this.characters[i]);
                 }
-                data.append("start_at", this.start_at);
-                data.append("end_at", this.end_at);
-                data.append("limit", this.limit);
-                data.append("offset", offset.toString());
-                fetch("https://zaubermaerchen.info/imas_cg/api/cartoon/search/", {
-                    method: "POST",
+                url.searchParams.append("start_at", this.start_at);
+                url.searchParams.append("end_at", this.end_at);
+                url.searchParams.append("limit", this.limit);
+                url.searchParams.append("offset", offset.toString());
+
+                fetch(url.href, {
+                    method: "GET",
                     headers: {
                         "Accept": "application/json",
                     },
-                    body: data,
                     mode: "cors",
                     credentials: "omit"
                 }).then((response) => {
@@ -87,7 +83,7 @@
                     this.count = json.count;
                     this.results = json.results;
                 })
-            }
+            },
             changePage: function(offset: number): void {
                 this.getResults(offset);
             }
