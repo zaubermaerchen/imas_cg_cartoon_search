@@ -2,11 +2,11 @@
     <section>
         <el-form ref="form" label-position="right" label-width="150px">
             <el-form-item label="タイトル">
-                <el-input v-model="title" name="title"></el-input>
+                <el-input v-model="title" name="title" placeholder="タイトル"></el-input>
             </el-form-item>
             <el-form-item label="公開日">
-                <el-date-picker v-model="start_at" name="start_at" type="date" placeholder="from"></el-date-picker> 〜
-                <el-date-picker v-model="end_at" name="end_at" type="date" placeholder="from"></el-date-picker>
+                <el-date-picker v-model="start_at" name="start_at" type="date" placeholder="検索対象開始日"></el-date-picker> 〜
+                <el-date-picker v-model="end_at" name="end_at" type="date" placeholder="検索対象終了日"></el-date-picker>
             </el-form-item>
             <el-form-item label="登場キャラクター">
                 <el-select v-model="characters" multiple filterable no-match-text="見つかりません" placeholder="登場キャラクター">
