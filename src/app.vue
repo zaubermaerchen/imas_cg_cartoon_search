@@ -1,16 +1,57 @@
 <template>
     <section>
-        <searchform v-bind:title="title" v-bind:start_at="start_at" v-bind:end_at="end_at" v-bind:characters="characters"></searchform>
-        <result v-for="result in results" v-bind:data="result"></result>
-        <pager v-bind:count="count" v-bind:limit="limit" @change="changePage"></pager>
+        <el-form ref="form" label-position="right" label-width="150px">
+            <el-form-item label="タイトル">
+                <el-input v-model="title" name="title"></el-input>
+            </el-form-item>
+            <el-form-item label="公開日">
+                <el-date-picker v-model="start_at" name="start_at" type="date" placeholder="from"></el-date-picker> 〜
+                <el-date-picker v-model="end_at" name="end_at" type="date" placeholder="from"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="登場キャラクター">
+                <el-select v-model="characters" multiple filterable no-match-text="見つかりません" placeholder="登場キャラクター">
+                    <el-option v-for="name in target_characters" :key="name" :label="name" :value="name"></el-option>
+                </el-select>
+                <input type="hidden" name="character" v-for="character in characters" v-bind:value="character" />
+            </el-form-item>
+            <el-button type="primary" native-type="submit">検索</el-button>
+        </el-form>
+
+        <el-pagination background layout="prev, pager, next" v-on:current-change="changePage" v-bind:total="count" v-bind:page-size="limit"></el-pagination>
+
+        <el-container v-for="result in results" class="result">
+            <el-aside width="180px">
+                <img width="180" height="205" v-bind:src="getThumbnailImageUrl(result.id, result.thumbnail_hash)" />
+            </el-aside>
+            <el-container>
+                <el-header>
+                    <a v-bind:href="getGameUrl('cartoon/scene/' + result.id)">
+                        第<span>{{ result.id }}</span>話
+                        「<span>{{ result.title }}</span>」
+                    </a>
+                </el-header>
+                <el-main>
+                    <h2>公開日</h2>
+                    <p>{{ result.date }}</p>
+
+                    <h2>登場アイドル</h2>
+                    <ul>
+                        <li v-for="name in result.characters"><a v-bind:href="'?character=' + name">{{ name }}</a></li>
+                    </ul>
+
+                    <h2>備考</h2>
+                    <p>{{ result.comment }}</p>
+                </el-main>
+            </el-container>
+        </el-container>
+
+        <el-pagination background layout="prev, pager, next" v-on:current-change="changePage" v-bind:total="count" v-bind:page-size="limit"></el-pagination>
     </section>
 </template>
 
 
 <script lang="ts">
-    import searchform from './components/search_form.vue';
-    import result from './components/search_result.vue';
-    import pager from './components/pager.vue';
+    import * as api from './components/api.ts';
 
     function getCurrentDate(): string {
         var now: Date  = new Date();
@@ -21,11 +62,6 @@
     }
 
     export default {
-        components: {
-            "searchform": searchform,
-            "result": result,
-            "pager": pager
-        },
         data: function () {
             return {
                 title: "",
@@ -34,12 +70,16 @@
                 characters: [],
                 results: [],
                 count: 0,
-                limit: 10
+                limit: 10,
+                target_characters: [],
             };
         },
         mounted: function (): void {
             this.setParameters();
             this.getResults();
+            api.getCharacterNameList().then((json: any) => {
+                this.target_characters = json.names;
+            })
         },
         methods: {
             setParameters: function(): void {
@@ -58,34 +98,26 @@
                 }
             },
             getResults(offset: number = 0) {
-                const url = new URL("https://zaubermaerchen.info/imas_cg/api/cartoon/search/");
-                if(this.title.length > 0) {
-                    url.searchParams.append("title", this.title);
-                }
-                for(let i = 0; i < this.characters.length; i++) {
-                    url.searchParams.append("character", this.characters[i]);
-                }
-                url.searchParams.append("start_at", this.start_at);
-                url.searchParams.append("end_at", this.end_at);
-                url.searchParams.append("limit", this.limit);
-                url.searchParams.append("offset", offset.toString());
-
-                fetch(url.href, {
-                    method: "GET",
-                    headers: {
-                        "Accept": "application/json",
-                    },
-                    mode: "cors",
-                    credentials: "omit"
-                }).then((response) => {
-                    return response.json();
-                }).then((json) => {
+                const title = this.title.length > 0 ? this.title : null;
+                const start_at = this.start_at.length > 0 ? this.start_at : null;
+                const end_at = this.end_at.length > 0 ? this.end_at.title : null;
+                api.searchCartoon(title, this.characters, start_at, end_at, this.limit, offset).then((json: any) => {
                     this.count = json.count;
                     this.results = json.results;
                 })
             },
-            changePage: function(offset: number): void {
-                this.getResults(offset);
+            changePage: function(page: number): void {
+                this.getResults((page - 1) * this.limit);
+            },
+            getBaseUrl: function(path: string): string {
+                return "http://125.6.169.35/idolmaster/" + path;
+            },
+            getGameUrl: function(path: string): string {
+                const url = this.getBaseUrl(path);
+                return "http://sp.pf.mbga.jp/12008305/" + "?url=" + encodeURIComponent(url);
+            },
+            getThumbnailImageUrl: function(id: number, hash: string): string {
+                return this.getBaseUrl("media/image_sp/cartoon/" + id + "/" + hash + ".jpg");
             }
         }
     }
@@ -94,5 +126,59 @@
 <style>
     body {
         font-size: 80%;
+    }
+    .el-form {
+        margin-bottom: 1em;
+    }
+    .el-select {
+        width: 100%;
+    }
+    .el-pagination {
+        display: flex;
+        justify-content: center;
+    }
+
+    .result {
+        margin: 1em 0;
+        display: -webkit-box;
+        display: flex;
+        align-items: center;
+    }
+
+    .result > .el-container  {
+        margin: 0 0.25em;
+        padding: 5px;
+        background-color: #eeeeee;
+        border-radius: 0.5em;
+    }
+    .result > .el-container > *  {
+        padding: 0;
+    }
+    .result > .el-container > .el-header {
+        font-size: 120%;
+        font-weight: bold;
+        margin: 0 0 0.5em 0;
+        height: auto!important;
+    }
+    .result > .el-container > .el-main > h2 {
+        font-size: 100%;
+        margin: 0;
+    }
+    .result > .el-container > .el-main > p, 
+    .result > .el-container > .el-main > ul {
+        margin: 0 0 0.5em 0;
+        padding: 5px;
+        background-color: #ccccff;
+        border-radius: 0.5em;
+    }
+    .result > .el-container > .el-main > ul {
+        display: -webkit-box;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .result > .el-container > .el-main > ul > li {
+        list-style-type: none;
+        display: inline;
+        padding-right: 0.5em;
     }
 </style>
