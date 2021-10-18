@@ -112,7 +112,7 @@
                 this.getResults((page - 1) * this.limit);
             },
             getBaseUrl: function(path: string): string {
-                return "http://125.6.169.35/idolmaster/" + path;
+                return "http://mobamas.net/idolmaster/" + path;
             },
             getGameUrl: function(path: string): string {
                 const url = this.getBaseUrl(path);
