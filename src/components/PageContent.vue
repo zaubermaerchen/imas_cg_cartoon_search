@@ -7,7 +7,7 @@ interface Props {
   pageSize: number;
 }
 interface Emits {
-  (e: 'update:modelValue', page: number): string
+  (e: 'update:modelValue', page: number): void
 }
 
 const props = defineProps<Props>();
