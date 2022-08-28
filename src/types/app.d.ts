@@ -1,6 +1,6 @@
 interface SearchCondition {
-  title?: string
+  title: string
   characters: string[]
-  startAt?: string
-  endAt?: string
+  startAt: string
+  endAt: string
 }
