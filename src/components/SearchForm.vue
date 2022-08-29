@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { getCharacterNameList } from '@/functions/api';
+import { ref, computed, onMounted } from 'vue'
+import { getCharacterNameList } from '@/functions/api'
 
 interface Props {
   modelValue: SearchCondition
@@ -9,18 +9,18 @@ interface Emits {
   (e: 'update:modelValue', condition: SearchCondition): void
   (e: 'ready'): void
 }
-const props = defineProps<Props>();
+const props = defineProps<Props>()
 const emits = defineEmits<Emits>()
 
 const condition = computed({
   get: () => props.modelValue,
   set: (value) => emits('update:modelValue', value),
-});
+})
 
-const targetCharacters = ref<string[]>([]);
+const targetCharacters = ref<string[]>([])
 const loadCharacterNameList = async() => {
-  const response = await getCharacterNameList();
-  targetCharacters.value = response.names;
+  const response = await getCharacterNameList()
+  targetCharacters.value = response.names
 }
 
 onMounted(() => {

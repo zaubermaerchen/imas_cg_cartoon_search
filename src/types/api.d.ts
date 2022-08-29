@@ -9,7 +9,7 @@ declare namespace Api {
   }
 
   export interface SearchCartoonResponse {
-    count: number;
+    count: number
     next: string | null
     previous: string | null
     results: Cartoon[]

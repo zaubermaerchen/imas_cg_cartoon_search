@@ -1,16 +1,16 @@
 async function getApiResponse<T>(path: string, params?: URLSearchParams): Promise<T> {
-  const url = new URL(`${import.meta.env.VITE_API_SERVER_URL}${path}`)
+  const url = new URL(path, import.meta.env.VITE_API_SERVER_URL)
   if (params !== undefined) {
     url.search = params.toString()
   }
 
   const response = await fetch(url.href, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Accept": "application/json",
+      'Accept': 'application/json',
     },
-    mode: "cors",
-    credentials: "omit",
+    mode: 'cors',
+    credentials: 'omit',
   })
 
   return await response.json()
@@ -19,22 +19,22 @@ async function getApiResponse<T>(path: string, params?: URLSearchParams): Promis
 export async function searchCartoon(title?: string, characters: string[] = [], startAt?: string, endAt?: string, limit?: number, offset?: number): Promise<Api.SearchCartoonResponse> {
   const params = new URLSearchParams
   if(title !== undefined) {
-    params.append('title', title);
+    params.append('title', title)
   }
-  for(let i = 0; i < characters.length; i++) {
-    params.append('character', characters[i]);
+  for(const character of characters) {
+    params.append('character', character)
   }
   if(startAt !== undefined) {
-    params.append('start_at', startAt);
+    params.append('start_at', startAt)
   }
   if(endAt !== undefined) {
-    params.append('end_at', endAt);
+    params.append('end_at', endAt)
   }
   if (limit !== undefined) {
-    params.append('limit', limit.toString());
+    params.append('limit', limit.toString())
   }
   if (offset !== undefined) {
-    params.append('offset', offset.toString());
+    params.append('offset', offset.toString())
   }
 
   return await getApiResponse('cartoon/search', params)

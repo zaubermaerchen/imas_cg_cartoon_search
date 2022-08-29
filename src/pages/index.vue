@@ -6,7 +6,7 @@ import SearchForm from '@/components/SearchForm.vue'
 import PageContent from '@/components/PageContent.vue'
 import Cartoon from '@/components/Cartoon.vue'
 
-const router = useRouter();
+const router = useRouter()
 
 const condition = reactive<SearchCondition>({
   title: '',
@@ -15,9 +15,9 @@ const condition = reactive<SearchCondition>({
   endAt: '',
 })
 
-const response = ref<Api.SearchCartoonResponse | null>(null);
-const page  = ref(1);
-const limit = 10;
+const response = ref<Api.SearchCartoonResponse | null>(null)
+const page  = ref(1)
+const limit = 10
 
 const getCurrenetDate = () => {
   const now = new Date()
@@ -27,7 +27,7 @@ const getCurrenetDate = () => {
 }
 
 const setConditions = () => {
-  const parameters: URLSearchParams = new URLSearchParams(window.location.search);
+  const parameters: URLSearchParams = new URLSearchParams(window.location.search)
   condition.title = parameters.get('title') ?? ''
   condition.startAt = parameters.get('start_at') ?? '2011-11-28'
   condition.endAt = parameters.get('end_at') ?? getCurrenetDate()
@@ -35,7 +35,7 @@ const setConditions = () => {
 }
 
 const search = async() => {
-  const offset = (page.value - 1) * limit;
+  const offset = (page.value - 1) * limit
   response.value = await searchCartoon(
     condition.title || undefined,
     condition.characters,
@@ -49,7 +49,7 @@ const search = async() => {
   if (condition.title) {
     query['title'] = condition.title
   }
-  query['characters'] = condition.characters;
+  query['characters'] = condition.characters
   if (condition.startAt) {
     query['start_at'] = condition.startAt
   }
@@ -59,7 +59,7 @@ const search = async() => {
   router.replace({
     name: 'Index',
     query: query,
-  });
+  })
 }
 
 const ready = () => {
@@ -71,7 +71,7 @@ watch(condition, () => {
   stopPageWatch()
   page.value = 1
   stopPageWatch = watch(page, () => void search())
-  search();
+  void search()
 })
 </script>
 
