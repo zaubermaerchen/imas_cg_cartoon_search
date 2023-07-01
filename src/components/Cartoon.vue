@@ -15,7 +15,7 @@ const getMobageUrl = (gameUrl: URL) => {
   return mobageUrl
 }
 const thumbnailImageUrl = computed(() => {
-  return (new URL(import.meta.env.VITE_GAME_SERVER_URL, `cartoon/${props.value.id}/${props.value.thumbnail_hash}.jpg`)).href;
+  return (new URL(import.meta.env.VITE_IMAGE_SERVER_URL, `cartoon/${props.value.id}/${props.value.thumbnail_hash}.jpg`)).href;
 })
 
 const cartoonLinkUrl = computed(() => {
