@@ -1,13 +1,13 @@
 async function getApiResponse<T>(path: string, params?: URLSearchParams): Promise<T> {
-  const url = new URL(path, import.meta.env.VITE_API_SERVER_URL)
+  let url = `${import.meta.env.VITE_API_SERVER_URL}${path}`
   if (params !== undefined) {
-    url.search = params.toString()
+    url += `?${params?.toString() ?? ''}`
   }
 
-  const response = await fetch(url.href, {
+  const response = await fetch(url, {
     method: 'GET',
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
     },
     mode: 'cors',
     credentials: 'omit',
@@ -16,18 +16,25 @@ async function getApiResponse<T>(path: string, params?: URLSearchParams): Promis
   return await response.json()
 }
 
-export async function searchCartoon(title?: string, characters: string[] = [], startAt?: string, endAt?: string, limit?: number, offset?: number): Promise<Api.SearchCartoonResponse> {
-  const params = new URLSearchParams
-  if(title !== undefined) {
+export async function searchCartoon(
+  title?: string,
+  characters: string[] = [],
+  startAt?: string,
+  endAt?: string,
+  limit?: number,
+  offset?: number,
+): Promise<Api.SearchCartoonResponse> {
+  const params = new URLSearchParams()
+  if (title !== undefined) {
     params.append('title', title)
   }
-  for(const character of characters) {
+  for (const character of characters) {
     params.append('character', character)
   }
-  if(startAt !== undefined) {
+  if (startAt !== undefined) {
     params.append('start_at', startAt)
   }
-  if(endAt !== undefined) {
+  if (endAt !== undefined) {
     params.append('end_at', endAt)
   }
   if (limit !== undefined) {
@@ -37,9 +44,9 @@ export async function searchCartoon(title?: string, characters: string[] = [], s
     params.append('offset', offset.toString())
   }
 
-  return await getApiResponse('cartoon/search', params)
+  return await getApiResponse('cartoon/search/', params)
 }
 
 export async function getCharacterNameList(): Promise<Api.IdolNameListResponse> {
-  return await getApiResponse('idol_name/list')
+  return await getApiResponse('idol_name/list/')
 }
