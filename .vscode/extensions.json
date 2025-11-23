@@ -1,7 +1,10 @@
 {
   "recommendations": [
-    "vue.volar",
+    "Vue.volar",
+    "vitest.explorer",
     "dbaeumer.vscode-eslint",
-    "firefox-devtools.vscode-firefox-debug"
-]
+    "EditorConfig.EditorConfig",
+    "oxc.oxc-vscode",
+    "esbenp.prettier-vscode"
+  ]
 }
