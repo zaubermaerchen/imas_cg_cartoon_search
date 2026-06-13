@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
-import { useRouter } from "vue-router"
+import { useRouter } from 'vue-router'
 import { searchCartoon } from '@/functions/api'
 import SearchForm from '@/components/SearchForm.vue'
 import PageContent from '@/components/PageContent.vue'
@@ -16,7 +16,7 @@ const condition = reactive<SearchCondition>({
 })
 
 const response = ref<Api.SearchCartoonResponse | null>(null)
-const page  = ref(1)
+const page = ref(1)
 const limit = 10
 
 const getCurrenetDate = () => {
@@ -34,7 +34,7 @@ const setConditions = () => {
   condition.characters = parameters.getAll('character')
 }
 
-const search = async() => {
+const search = async () => {
   const offset = (page.value - 1) * limit
   response.value = await searchCartoon(
     condition.title || undefined,
@@ -42,7 +42,7 @@ const search = async() => {
     condition.startAt || undefined,
     condition.endAt || undefined,
     limit,
-    offset
+    offset,
   )
 
   const query: Record<string, string | string[]> = {}
@@ -76,7 +76,7 @@ watch(condition, () => {
 </script>
 
 <template>
-  <SearchForm v-model="condition" @ready="ready" />
+  <SearchForm :model-value="condition" @ready="ready" />
 
   <PageContent v-model="page" :total="response?.count ?? 0" :page-size="limit">
     <Cartoon v-for="(result, index) in response?.results" :key="index" :value="result" />
