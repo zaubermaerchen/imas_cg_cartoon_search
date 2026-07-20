@@ -22,4 +22,10 @@ export default defineConfigWithVueTs(
 
   ...pluginOxlint.configs['flat/recommended'],
   skipFormatting,
+
+  {
+    rules: {
+      'vue/multi-word-component-names': 'off',
+    },
+  },
 )
