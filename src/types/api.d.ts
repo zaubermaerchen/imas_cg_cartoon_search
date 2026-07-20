@@ -5,6 +5,7 @@ declare namespace Api {
     date: string
     characters: string[]
     comment: string
+    image_hash: string
     thumbnail_hash: string
   }
 
