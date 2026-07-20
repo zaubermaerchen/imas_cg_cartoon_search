@@ -49,7 +49,7 @@ const search = async () => {
   if (condition.title) {
     query['title'] = condition.title
   }
-  query['characters'] = condition.characters
+  query['character'] = condition.characters
   if (condition.startAt) {
     query['start_at'] = condition.startAt
   }
