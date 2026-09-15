@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, type LocationQueryRaw } from 'vue-router'
 import { searchCartoon } from '@/functions/api'
 import SearchForm from '@/components/SearchForm.vue'
 import PageContent from '@/components/PageContent.vue'
@@ -45,7 +45,7 @@ const search = async () => {
     offset,
   )
 
-  const query: Record<string, string | string[]> = {}
+  const query: LocationQueryRaw = {}
   if (condition.title) {
     query['title'] = condition.title
   }
